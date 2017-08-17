@@ -1,0 +1,4 @@
+load("foo.lets_def", "foo")
+foo(
+    name="foobar2",
+)

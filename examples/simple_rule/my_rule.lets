@@ -1,0 +1,7 @@
+exports.my_rule = rule({
+  implementation: () => {
+    console.log('calling rule');
+  }
+})
+
+console.log('loaded simple_rule')

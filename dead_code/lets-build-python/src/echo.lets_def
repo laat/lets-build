@@ -1,0 +1,6 @@
+load("foo.lets_def", "foo")
+
+def echo(*args, **kwargs):
+    print ('ran echo', args, kwargs)
+    foo(*args, **kwargs)
+    genrule(**kwargs)

@@ -1,0 +1,5 @@
+const noop = () => {};
+
+exports.empty = rule({
+    implementation: noop,
+})

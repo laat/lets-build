@@ -1,0 +1,8 @@
+const { my_rule } = load('//examples/simple_rule:my_rule.lets')
+
+my_rule({
+  name: 'a'
+})
+my_rule({
+  name: 'b'
+})

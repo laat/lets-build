@@ -1,0 +1,5 @@
+const { empty } = load('//examples/empty:empty.lets');
+
+empty({
+    name: 'empty-hello-world',
+});
