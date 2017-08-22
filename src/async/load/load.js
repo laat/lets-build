@@ -68,10 +68,12 @@ const createCollector = () => {
   }
 }
 
-const loadSingleBuildFile = async (root, wd, request) => {
+const loadSingleBuildFile = async (root, request) => {
   if (!request.endsWith('BUILD.lets')) {
     request = request + ':BUILD.lets';
   }
+  const wd = path.dirname(await resolveExtension(root, root, request));
+
   const files = await staticAnalyse(root, wd, request);
   const compiled = compile(files);
 
@@ -96,25 +98,32 @@ const loadSingleBuildFile = async (root, wd, request) => {
   };
 
   load(wd)(request);
-  return collect();
+  return Object.assign({ wd }, collect());
 }
 
-const load = (root, wd, request) => {
-
+const load = async (root, request) => {
+  const files = Object.create(null);
+  const _load = async (request) => {
+    if (files[request] != null) {
+      return;
+    }
+    const { wd, rules, external } = await loadSingleBuildFile(root, request)
+    files[request] = rules;
+    await Promise.all(external.map(_load));
+  }
+  await _load(request);
+  return files;
 }
 
 // # lazy test
 if (typeof require != 'undefined' && require.main==module) {
   const getWorkspaceRoot = require('../utils/workspaceRoot');
   (async () => {
-    const wd = __dirname
-    const root = await getWorkspaceRoot(wd);
+    const root = await getWorkspaceRoot(__dirname);
     const request = `//src/async/load/__test__/simple`
 
-    const result = await loadSingleBuildFile(root, wd, request);
-    console.log('rules');
-    console.log(result.rules);
-    console.log('external');
-    console.log(result.external);
+    const result = await load(root, request);
+    console.log(JSON.stringify(result, undefined, 2));
+    console.log(result['//src/async/load/__test__/simple'])
   })()
 }

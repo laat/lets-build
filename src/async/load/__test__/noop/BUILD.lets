@@ -1,11 +1,13 @@
-noopRule = rule({
+const noopRule = rule({
   impl() {
     // ... implementation of a rule
   },
   attrs: {
+    src: attr.label({ mandatory: true })
   }
 });
 
 noopRule({
-  name: 'noop'
+  name: 'noop',
+  src: '//src/async/load/__test__/simple:generate_file2',
 })
