@@ -98,7 +98,7 @@ const loadSingleBuildFile = async (root, request) => {
   };
 
   load(wd)(request);
-  return Object.assign({ wd }, collect());
+  return collect();
 }
 
 const load = async (root, request) => {
@@ -107,7 +107,7 @@ const load = async (root, request) => {
     if (files[request] != null) {
       return;
     }
-    const { wd, rules, external } = await loadSingleBuildFile(root, request)
+    const { rules, external } = await loadSingleBuildFile(root, request)
     files[request] = rules;
     await Promise.all(external.map(_load));
   }
