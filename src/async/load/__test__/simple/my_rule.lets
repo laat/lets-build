@@ -1,0 +1,9 @@
+exports.myRule = rule({
+  impl() {
+    // ... implementation of a rule
+  },
+  attrs: {
+    src: attr.label({ mandatory: true })
+    // some attributes to use
+  }
+});

@@ -1,0 +1,8 @@
+exports.myRule = rule({
+  impl() {
+    // ... implementation of a rule
+  },
+  attrs: {
+    // some attributes to use
+  }
+});

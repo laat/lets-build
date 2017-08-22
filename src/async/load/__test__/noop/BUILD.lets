@@ -1,0 +1,11 @@
+noopRule = rule({
+  impl() {
+    // ... implementation of a rule
+  },
+  attrs: {
+  }
+});
+
+noopRule({
+  name: 'noop'
+})

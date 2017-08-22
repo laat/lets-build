@@ -24,7 +24,6 @@ const createLoad = (scripts, rule) => {
     compiled.call(exports, exports, load, rule)
     return exports;
   }
-
 };
 
 const loadSingleBuildFile = module.exports = async (main) => {

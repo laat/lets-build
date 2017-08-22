@@ -1,0 +1,9 @@
+const { myRule } = load('./my-rule');
+
+myRule({
+  name: 'generate_file',
+});
+
+myRule({
+  name: 'generate_file2',
+});

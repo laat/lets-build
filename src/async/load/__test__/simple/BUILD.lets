@@ -1,0 +1,11 @@
+const { myRule } = load('my_rule.lets');
+
+myRule({
+  name: 'generate_file',
+  src: '//src/async/load/__test__/noop:noop',
+});
+
+myRule({
+  name: 'generate_file2',
+  src: 'input.txt'
+});

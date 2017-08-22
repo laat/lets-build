@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "find-up": "^2.1.0",
+    "hard-rejection": "^1.0.0",
     "strip-bom": "^3.0.0"
   }
 }
