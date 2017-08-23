@@ -15,7 +15,7 @@ const resolveExtension = require('./resolve-build-extension');
 const evaluatedAttrs = (rules) => rules.map((rule) => {
   const name = rule.options.name;
 
-  const attrs = rule.definition.attrs;
+  const attrs = rule.definition.attrs || {};
   const options = rule.options;
   const evaluated = Object.create(null);
   Object.keys(attrs).forEach(attr => {
@@ -41,38 +41,43 @@ const createCollector = () => {
   }
 
   const attr = {
-    label: (definition) => (name, attrName, ruleName) => {
+    output: (definition) => (value) => ({ type: 'output', value, definition}),
+    outputs: (definition) => (value) => ({ type: 'outputs', value, definition}),
+    label: (definition) => (value, attrName, ruleName) => {
       if (definition.mandatory === true) {
-        if (name == null) {
+        if (value == null) {
           throw new Error(`${attrName} is mandatory in rule ${ruleName}`)
         }
       }
-      labels.push(name);
-      return name;
-    }
-  }
-
-  const Label = (name) => {
-    labels.push(name);
-    return name;
+      labels.push(value);
+      return { type: 'label', value, definition };
+    },
+    labels: (definition) => (value) => {
+      if (Array.isArray(value)) {
+        value.forEach(v => { labels.push(v) });
+      }
+      return { type: 'labels', value, definition };
+    },
   }
 
   return {
     collect: () => {
+      const evaluated = evaluatedAttrs(rules);
+      const external = Array.from(new Set(labels.filter(isExternalLabel).map(buildFileRef)));
       return {
-        rules: evaluatedAttrs(rules),
-        external: labels.filter(isExternalLabel).map(buildFileRef)
+        rules: evaluated,
+        external,
       };
     },
-    args: [rule, attr, Label],
+    args: [rule, attr],
   }
 }
 
 const loadSingleBuildFile = async (root, request) => {
+  const wd = request.substr(2);
   if (!request.endsWith('BUILD.lets')) {
     request = request + ':BUILD.lets';
   }
-  const wd = path.dirname(await resolveExtension(root, root, request));
 
   const files = await staticAnalyse(root, wd, request);
   const compiled = compile(files);

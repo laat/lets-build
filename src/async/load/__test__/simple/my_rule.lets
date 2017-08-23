@@ -3,7 +3,8 @@ exports.myRule = rule({
     // ... implementation of a rule
   },
   attrs: {
-    src: attr.label({ mandatory: true })
+    main: attr.label({ mandatory: true }),
+    srcs: attr.labels(),
     // some attributes to use
   }
 });
