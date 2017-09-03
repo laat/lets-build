@@ -1,0 +1,7 @@
+exports.noop = rule({
+  impl: function noop() {},
+  attrs: {
+    src: attr.label({ mandatory: true }),
+    out: attr.output({ default: 'index.html' }),
+  },
+});
