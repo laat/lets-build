@@ -2,6 +2,8 @@ const vm = require('vm');
 const path = require('path');
 const readFile = require('./utils/readFile').sync;
 const fileExists = require('./utils/fileExists').sync;
+const extractLabels = require('./utils/extractLabels');
+const flatten = require('./utils/flattenReducer');
 const createSandbox = require('./sandbox');
 const locate = require('./utils/locate');
 
@@ -36,8 +38,39 @@ const loadSingle = target => {
   return rules;
 };
 
+const isExternal = target => target.includes(':');
+const extractBuildRoot = target => target.split(':')[0];
+const ruleMap = rules => {
+  const rulesMap = Object.create(null);
+  Object.entries(rules).forEach(([buildFile, rules]) => {
+    rules.forEach(({ name, impl, attrs }) => {
+      rulesMap[buildFile + ':' + name] = { impl, attrs };
+    });
+  });
+  return rulesMap;
+};
+const loadBuildFiles = target => {
+  const buildRules = Object.create(null);
+  const load = buildTarget => {
+    if (buildRules[buildTarget] != null) {
+      return buildRules[buildTarget];
+    }
+    const rules = (buildRules[buildTarget] = loadSingle(buildTarget));
+    rules
+      .map(extractLabels)
+      .reduce(flatten)
+      .filter(isExternal)
+      .map(extractBuildRoot)
+      .forEach(load);
+  };
+  load(extractBuildRoot(target));
+  return ruleMap(buildRules);
+};
+
+module.exports = loadBuildFiles;
+
 // # lazy test
 if (typeof require != 'undefined' && require.main == module) {
-  const rules = loadSingle('//src/__test__/noop');
+  const rules = loadBuildFiles('//src/__test__/noop');
   console.log(JSON.stringify(rules, undefined, 2));
 }

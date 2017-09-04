@@ -1,3 +1,2 @@
 const { noop } = load('./noop.lets');
-noop({ name: 'my_rule', src: '//foobar' });
-genrule({ name: 'genrule' });
+noop({ name: 'my_rule2', src: '//src/__test__/noop2:noop' });
