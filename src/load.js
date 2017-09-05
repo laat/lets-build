@@ -2,7 +2,7 @@ const vm = require('vm');
 const path = require('path');
 const readFile = require('./utils/readFile').sync;
 const fileExists = require('./utils/fileExists').sync;
-const extractLabels = require('./utils/extractLabels');
+const { extractLabels } = require('./analyze/labels');
 const flatten = require('./utils/flattenReducer');
 const createSandbox = require('./sandbox');
 const locate = require('./utils/locate');
@@ -44,6 +44,12 @@ const ruleMap = rules => {
   const rulesMap = Object.create(null);
   Object.entries(rules).forEach(([buildFile, rules]) => {
     rules.forEach(({ name, impl, attrs }) => {
+      if (name == null) {
+        throw new Error(`name is required. File: ${buildFile}`);
+      }
+      if (impl == null) {
+        throw new Error(`${name} has no impl. File: ${buildFile}`);
+      }
       rulesMap[buildFile + ':' + name] = { impl, attrs };
     });
   });

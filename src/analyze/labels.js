@@ -1,4 +1,4 @@
-const extractLabels = rule => {
+const extractLabels = exports.extractLabels = rule => {
   const labels = [];
   Object.keys(rule.attrs).forEach(attr => {
     const attrDef = rule.attrs[attr];
@@ -11,5 +11,3 @@ const extractLabels = rule => {
   });
   return labels;
 };
-
-module.exports = extractLabels;
