@@ -1,0 +1,2 @@
+const { noop } = load('./noop.lets');
+noop({ name: 'my_rule2', src: '//src/load/__test__/noop2:noop' });
